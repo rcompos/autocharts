@@ -1,0 +1,147 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: oci-staging-7
+  name: oci-staging-7
+  namespace: default
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    serviceDomain: cluster.local
+    services:
+      cidrBlocks:
+      - 10.128.0.0/12
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+    kind: KubeadmControlPlane
+    name: oci-staging-7-control-plane
+    namespace: default
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    kind: OCICluster
+    name: oci-staging-7
+    namespace: default
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OCICluster
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: oci-staging-7
+  name: oci-staging-7
+  namespace: default
+spec:
+  compartmentId: default
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+kind: KubeadmControlPlane
+metadata:
+  name: oci-staging-7-control-plane
+  namespace: default
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        certSANs:
+        - localhost
+        - 127.0.0.1
+      dns: {}
+      etcd: {}
+      kubernetesVersion: 1.24.6
+      networking: {}
+      scheduler: {}
+    initConfiguration:
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          cloud-provider: external
+          provider-id: oci://{{ ds["id"] }}
+    joinConfiguration:
+      discovery: {}
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          cloud-provider: external
+          provider-id: oci://{{ ds["id"] }}
+  machineTemplate:
+    infrastructureRef:
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      kind: OCIMachineTemplate
+      name: oci-staging-7-control-plane
+      namespace: default
+  replicas: 3
+  version: 1.24.6
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OCIMachineTemplate
+metadata:
+  name: oci-staging-7-control-plane
+  namespace: default
+spec:
+  template:
+    spec:
+      compartmentId: default
+      imageId: default
+      isPvEncryptionInTransitEnabled: default
+      metadata:
+        ssh_authorized_keys: default
+      shape: VM.Standard.E4.Flex
+      shapeConfig:
+        ocpus: "4"
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OCIMachineTemplate
+metadata:
+  name: oci-staging-7-md-0
+  namespace: default
+spec:
+  template:
+    spec:
+      compartmentId: default
+      imageId: default
+      isPvEncryptionInTransitEnabled: default
+      metadata:
+        ssh_authorized_keys: default
+      shape: VM.Standard.E4.Flex
+      shapeConfig:
+        ocpus: "8"
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha4
+kind: KubeadmConfigTemplate
+metadata:
+  name: oci-staging-7-md-0
+  namespace: default
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          kubeletExtraArgs:
+            cloud-provider: external
+            provider-id: oci://{{ ds["id"] }}
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  name: oci-staging-7-md-0
+  namespace: default
+spec:
+  clusterName: oci-staging-7
+  replicas: 15
+  selector:
+    matchLabels: null
+  template:
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          kind: KubeadmConfigTemplate
+          name: oci-staging-7-md-0
+      clusterName: oci-staging-7
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: OCIMachineTemplate
+        name: oci-staging-7-md-0
+      version: 1.24.6
