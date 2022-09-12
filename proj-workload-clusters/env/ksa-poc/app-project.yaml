@@ -7,11 +7,12 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  description: Infrastructure Project
+  description: KSA OCI POC
   # Allow manifests to deploy from any Git repos
   sourceRepos:
-  # - '*'
-  - 'https://gitlab.corp.atieva.com/data/infrastructure/infra-charts.git'
+  - '*'
+  # - 'https://github.com/rcompos/autocharts.git'
+
   # Only permit applications to deploy to the guestbook namespace in the same cluster
   destinations:
   - namespace: '*' 
