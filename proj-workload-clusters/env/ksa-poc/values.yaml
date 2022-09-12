@@ -43,3 +43,12 @@ apps:
     repo: ""
     path: ""
     targetRev: ""
+
+  adasprod0cornholio2022aws:
+    name: adas-prod-0-cornholio-2022-aws
+    fullnameOverride: ""
+    values: ""
+    namespace: ""
+    repo: ""
+    path: ""
+    targetRev: ""
