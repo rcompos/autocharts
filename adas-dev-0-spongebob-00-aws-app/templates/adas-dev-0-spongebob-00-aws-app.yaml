@@ -1,46 +1,52 @@
-{{- range $key, $val := .Values.apps }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  {{- if $val.fullnameOverride }}
-  name: {{ $val.fullnameOverride }}
-  {{- else }}
-  name: {{ $val.name }}
-  {{- end }}
-  namespace: argocd
+  name: adas-dev-0-spongebob-00-aws-app
+  # You'll usually want to add your resources to the argocd namespace.
+  # namespace: 
+  # Add this finalizer ONLY if you want these to cascade delete.
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
+  # Add labels to your application object.
   labels:
-    name: {{ $val.name }}
+    name: adas-dev-0-spongebob-00-aws-app
 spec:
-  project: {{ $.Values.spec.project }}
+  # The project the application belongs to.
+  project: default
+
+  # Source of the application manifests
   source:
-    {{- if $val.repo }}
-    repoURL: {{ $val.repo }}
-    {{- else }}
-    repoURL: {{ $.Values.spec.source.repoURL }}
-    {{- end }}
-    {{- if $val.targetRev }}
-    targetRevision: {{ $val.targetRev }}
-    {{- else }}
-    targetRevision: {{ $.Values.spec.source.targetRevision }}
-    {{- end }}
-    {{- if $val.path }}
-    path: {{ $val.path }}
-    {{- else }}
-    path: {{ $val.name }} 
-    {{- end }}
+    # repoURL: https://github.com/argoproj/argocd-example-apps.git  # Can point to either a Helm chart repo or a git repo.
+    repoURL: https://github.com/rcompos/autocharts.git # Can point to either a Helm chart repo or a git repo.
+    targetRevision: main  # For Helm, this refers to the chart version.
+    path: adas-dev-0-spongebob-00-aws  # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
+
+    # helm specific config
+    # chart: adas-dev-0-spongebob-00-aws # Set this when pulling directly from a Helm repo. DO NOT set for git-hosted Helm charts.
     helm:
+      # passCredentials: false # If true then adds --pass-credentials to Helm commands to pass credentials to all domains
+      # # Extra parameters to set (same as setting through values.yaml, but these take precedence)
+      # parameters:
+      # - name: "nginx-ingress.controller.service.annotations.external-dns\\.alpha\\.kubernetes\\.io/hostname"
+      #   value: mydomain.example.com
+      # - name: "ingress.annotations.kubernetes\\.io/tls-acme"
+      #   value: "true"
+      #   forceString: true # ensures that value is treated as a string
+
+      # - name: config
+      #   path: files/config.json
+
+      # Release name override (defaults to application name)
+      # releaseName: adas-dev-0-spongebob-00-aws-app
+
+      # Helm values files for overriding values in the helm chart
+      # The path is relative to the spec.source.path directory defined above
       valueFiles:
-        {{- if $val.values }}
-        {{- range $val.values }}
-        - {{ . }}
-        {{- end }}
-        {{- else }}
-        {{- range $.Values.valueFiles }}
-        - {{ . }}
-        {{- end }}
-        {{- end }}
+      - values.yaml
+
+      # Optional Helm version to template with. If omitted it will fall back to look at the 'apiVersion' in Chart.yaml
+      # and decide which Helm binary to use automatically. This field can be either 'v2' or 'v3'.
+      # version: v3
       version: v3
 
     # plugin:
@@ -55,15 +61,11 @@ spec:
 
   # Destination cluster and namespace to deploy the application
   destination:
-    server: {{ $.Values.spec.destination.server }}
-    {{- if $val.namespace }}
+    # server: https://kubernetes.default.svc
+    server: https://kubernetes.default.svc
     # The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
-    namespace: {{ $val.namespace }}
-    {{- else if $val.fullnameOverride }}
-    namespace: {{ $.Values.spec.destination.namePrefix }}{{ $val.fullnameOverride }}
-    {{- else }}
-    namespace: {{ $.Values.spec.destination.namePrefix }}{{ $val.name }}
-    {{- end }}
+    # namespace: adas-dev-0-spongebob-00-aws-app
+    namespace: adas-dev-0-spongebob-00-aws-app
 
   # Sync policy
   syncPolicy:
@@ -86,7 +88,6 @@ spec:
 
   # Will ignore differences between live and desired states during the diff. Note that these configurations are not
   # used during the sync process.
-  {{- if $val.ignoreDiffs }}
   ignoreDifferences:
   # for the specified json pointers
   - group: apps
@@ -98,12 +99,9 @@ spec:
     kind: "*"
     managedFieldsManagers:
     - kube-controller-manager
-  {{- end }}
-    
+
   # RevisionHistoryLimit limits the number of items kept in the application's revision history, which is used for
   # informational purposes as well as for rollbacks to previous versions. This should only be changed in exceptional
   # circumstances. Setting to zero will store no history. This will reduce storage used. Increasing will increase the
   # space used to store the history, so we do not recommend increasing it.
   revisionHistoryLimit: 10
----
-{{- end }}
