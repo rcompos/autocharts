@@ -1,0 +1,38 @@
+spec:
+  project: proj-workload-clusters
+  destination:
+    server: https://kubernetes.default.svc
+    namePrefix: ""
+  source:
+    repoURL: https://github.com/rcompos/autocharts.git
+    targetRevision: main
+
+# GLobal app values file
+valueFiles:
+  - values-ksa-poc.yaml
+
+# Application Definitions
+#
+# app:
+#   appNickname:                      # Go conforming name (camelCase)
+#     name: name-of-app-directory     # Directory name where chart residees (required)
+#     fullnameOverride: name-of-app   # Override name of app to deploy (optional)
+#     values:                         # List of values file (optional)
+#       - values.yaml                   # Values file (optional)
+#       - values-my-env.yaml            # Values file (optional will be merged)
+#     namespace: custom-namespace     # Namespace (optional)
+#     repo: https://gitlab.corp.atieva.com/data/my-repo.git   # Git chart repo (optional)
+#     path: path/to/my-chart          # Path under chart repo (optional)
+#     targetRev: my/branch            # Git branch (optional)
+
+
+apps:
+  dataengDev0Cornholio2022aws:
+    name: dataeng-dev-0-cornholio-2022-aws
+    fullnameOverride: ""
+    values: ""
+    namespace: ""
+    repo: ""
+    path: ""
+    targetRev: ""
+
