@@ -25,7 +25,6 @@ valueFiles:
 #     path: path/to/my-chart          # Path under chart repo (optional)
 #     targetRev: my/branch            # Git branch (optional)
 
-
 apps:
 
   dataengprod0cornholio2064aws:
