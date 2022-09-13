@@ -27,3 +27,12 @@ valueFiles:
 
 
 apps:
+
+  dataengdev0cornholio2022aws:
+    name: dataeng-dev-0-cornholio-2022-aws
+    fullnameOverride: ""
+    values: ""
+    namespace: ""
+    repo: ""
+    path: ""
+    targetRev: ""
