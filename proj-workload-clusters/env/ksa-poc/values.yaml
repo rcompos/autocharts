@@ -35,3 +35,12 @@ apps:
     repo: ""
     path: ""
     targetRev: ""
+
+  adasprod0spongebob88:
+    name: adas-prod-0-spongebob-88
+    fullnameOverride: ""
+    values: ""
+    namespace: ""
+    repo: ""
+    path: ""
+    targetRev: ""
