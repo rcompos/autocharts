@@ -44,3 +44,12 @@ apps:
     repo: ""
     path: ""
     targetRev: ""
+
+  dataengdev0democluster123aws:
+    name: dataeng-dev-0-demo-cluster-123-aws
+    fullnameOverride: ""
+    values: ""
+    namespace: ""
+    repo: ""
+    path: ""
+    targetRev: ""
