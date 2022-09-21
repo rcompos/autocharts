@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "adas-stage-0-demo-cluster-123-aws.fullname" . }}-test-connection"
+  labels:
+    {{- include "adas-stage-0-demo-cluster-123-aws.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "adas-stage-0-demo-cluster-123-aws.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
