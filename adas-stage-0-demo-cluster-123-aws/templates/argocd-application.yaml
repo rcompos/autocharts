@@ -1,4 +1,0 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-    name: adas-stage-0-demo-cluster-123-aws
