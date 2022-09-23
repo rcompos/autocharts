@@ -26,3 +26,12 @@ valueFiles:
 #     targetRev: my/branch            # Git branch (optional)
 
 apps:
+
+  adasdev0democluster123aws:
+    name: adas-dev-0-demo-cluster-123-aws
+    fullnameOverride: ""
+    values: ""
+    namespace: ""
+    repo: ""
+    path: ""
+    targetRev: ""
